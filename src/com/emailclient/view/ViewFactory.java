@@ -1,10 +1,7 @@
 package com.emailclient.view;
 
 import com.emailclient.EmailManager;
-import com.emailclient.controller.BaseController;
-import com.emailclient.controller.LoginWindowController;
-import com.emailclient.controller.MainWindowController;
-import com.emailclient.controller.OptionsWindowController;
+import com.emailclient.controller.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,7 +16,7 @@ public class ViewFactory {
     private final ArrayList<Stage> activeStages;
     private boolean mainViewInitialized = false;
     // view options handling:
-    private ColorTheme colorTheme = ColorTheme.DARK;
+    private ColorTheme colorTheme = ColorTheme.DEFAULT;
     private FontSize fontSize = FontSize.MEDIUM;
 
     public ViewFactory(EmailManager emailManager) {
@@ -63,6 +60,12 @@ public class ViewFactory {
     public void showOptionsWindow() {
         System.out.println("show options window called");
         BaseController controller = new OptionsWindowController(emailManager, this, "OptionsWindow.fxml");
+        initializeStage(controller);
+    }
+
+    public void showComposeMessageWindow() {
+        System.out.println("show compose window called");
+        BaseController controller = new ComposeMessageController(emailManager, this, "ComposeMessageWindow.fxml");
         initializeStage(controller);
     }
 

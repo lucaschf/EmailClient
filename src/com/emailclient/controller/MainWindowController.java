@@ -10,10 +10,7 @@ import com.emailclient.view.ViewFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.util.Callback;
@@ -23,6 +20,10 @@ import java.util.Date;
 import java.util.ResourceBundle;
 
 public class MainWindowController extends BaseController implements Initializable {
+
+    private final MenuItem markUnreadMenuItem = new MenuItem("Mark as unread");
+    private final MenuItem deleteMessageMenuItem = new MenuItem("delete message");
+
     @FXML
     private TreeView<String> emailsTreeView;
 
@@ -67,6 +68,7 @@ public class MainWindowController extends BaseController implements Initializabl
     public void initialize(URL location, ResourceBundle resources) {
         setupEmailsTreeView();
         setupEmailsTableView();
+        setupContextMenus();
         setupFolderSelection();
         setupBoldRows();
         setupMessageRendererService();
@@ -130,10 +132,26 @@ public class MainWindowController extends BaseController implements Initializabl
         recipientCol.setCellValueFactory(new PropertyValueFactory<>("recipient"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<>("size"));
         dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        emailsTableView.setContextMenu(new ContextMenu(markUnreadMenuItem, deleteMessageMenuItem));
+    }
+
+    private void setupContextMenus() {
+        markUnreadMenuItem.setOnAction(event -> emailManager.setUnRead());
+        deleteMessageMenuItem.setOnAction(event -> {
+            emailManager.deleteSelectedMessage();
+            emailWebView.getEngine().loadContent("");
+        });
     }
 
     private void setupEmailsTreeView() {
         emailsTreeView.setRoot(emailManager.getFoldersRoot());
         emailsTreeView.setShowRoot(false);
+    }
+
+
+    @FXML
+    void composeMessageAction(ActionEvent event) {
+        viewFactory.showComposeMessageWindow();
     }
 }

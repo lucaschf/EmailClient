@@ -5,6 +5,9 @@ import com.emailclient.controller.services.FolderUpdaterService;
 import com.emailclient.model.EmailAccount;
 import com.emailclient.model.EmailMessage;
 import com.emailclient.model.EmailTreeItem;
+import com.emailclient.view.IconResolver;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -14,9 +17,11 @@ import java.util.List;
 public class EmailManager {
 
     private final FolderUpdaterService folderUpdaterService;
-    //Folder handling:
-    private final EmailTreeItem<String> foldersRoot = new EmailTreeItem<String>("");
-    private final List<Folder> folderList = new ArrayList<Folder>();
+    private final EmailTreeItem<String> foldersRoot = new EmailTreeItem<>("");
+    private final List<Folder> folderList = new ArrayList<>();
+    private final ObservableList<EmailAccount> emailAccounts = FXCollections.observableArrayList();
+    private final IconResolver iconResolver = new IconResolver();
+
     private EmailMessage selectedMessage;
     private EmailTreeItem<String> selectedFolder;
 
@@ -49,8 +54,14 @@ public class EmailManager {
         return this.folderList;
     }
 
+    public ObservableList<EmailAccount> getEmailAccounts() {
+        return emailAccounts;
+    }
+
     public void addEmailAccount(EmailAccount emailAccount) {
-        EmailTreeItem<String> treeItem = new EmailTreeItem<String>(emailAccount.getAddress());
+        emailAccounts.add(emailAccount);
+        EmailTreeItem<String> treeItem = new EmailTreeItem<>(emailAccount.getAddress());
+        treeItem.setGraphic(iconResolver.getIconForFolder(emailAccount.getAddress()));
         FetchFoldersService fetchFoldersService = new FetchFoldersService(emailAccount.getStore(), treeItem, folderList);
         fetchFoldersService.start();
         foldersRoot.getChildren().add(treeItem);
@@ -62,7 +73,26 @@ public class EmailManager {
             selectedMessage.getMessage().setFlag(Flags.Flag.SEEN, true);
             selectedFolder.decrementMessagesCount();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void setUnRead() {
+        try {
+            selectedMessage.setRead(false);
+            selectedMessage.getMessage().setFlag(Flags.Flag.SEEN, false);
+            selectedFolder.incrementMessagesCount();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSelectedMessage() {
+        try {
+            selectedMessage.getMessage().setFlag(Flags.Flag.DELETED, true);
+            selectedFolder.getEmailMessages().remove(selectedMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
