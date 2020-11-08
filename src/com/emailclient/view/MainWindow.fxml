@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="574.0" prefWidth="803.0"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="574.0" prefWidth="934.0"
             xmlns="http://javafx.com/javafx/11.0.1">
     <children>
         <MenuBar layoutX="2.0" layoutY="1.0" prefHeight="26.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0"
@@ -33,11 +33,11 @@
         <TableView fx:id="emailsTableView" layoutX="200.0" layoutY="28.0" prefHeight="184.0" prefWidth="603.0"
                    AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
             <columns>
-                <TableColumn prefWidth="119.199951171875" text="Sender"/>
-                <TableColumn minWidth="0.0" prefWidth="200.79995727539062" text="Subject"/>
-                <TableColumn minWidth="0.0" prefWidth="102.39996337890625" text="Recipient"/>
-                <TableColumn minWidth="0.0" prefWidth="91.199951171875" text="Size"/>
-                <TableColumn minWidth="0.0" prefWidth="88.0001220703125" text="Date"/>
+                <TableColumn fx:id="senderCol" prefWidth="119.199951171875" text="Sender"/>
+                <TableColumn fx:id="subjectCol" minWidth="0.0" prefWidth="200.79995727539062" text="Subject"/>
+                <TableColumn fx:id="recipientCol" minWidth="0.0" prefWidth="168.79998779296875" text="Recipient"/>
+                <TableColumn fx:id="sizeCol" minWidth="0.0" prefWidth="76.00006103515625" text="Size"/>
+                <TableColumn fx:id="dateCol" minWidth="0.0" prefWidth="166.39996337890625" text="Date"/>
             </columns>
         </TableView>
         <WebView fx:id="emailWebView" layoutX="200.0" layoutY="212.0" prefHeight="362.0" prefWidth="603.0"
