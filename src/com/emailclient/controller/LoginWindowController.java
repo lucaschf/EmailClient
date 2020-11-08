@@ -6,12 +6,16 @@ import com.emailclient.model.EmailAccount;
 import com.emailclient.view.ViewFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class LoginWindowController extends BaseController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class LoginWindowController extends BaseController implements Initializable {
 
     @FXML
     private TextField emailTextField;
@@ -69,5 +73,11 @@ public class LoginWindowController extends BaseController {
         }
 
         return true;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        passwordField.setText("vgapciopen");
+        emailTextField.setText("fxemailtestfx@gmail.com");
     }
 }

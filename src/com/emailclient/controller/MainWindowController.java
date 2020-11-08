@@ -2,6 +2,7 @@ package com.emailclient.controller;
 
 
 import com.emailclient.EmailManager;
+import com.emailclient.controller.services.MessageRendererService;
 import com.emailclient.model.EmailMessage;
 import com.emailclient.model.EmailTreeItem;
 import com.emailclient.model.SizeInteger;
@@ -46,6 +47,8 @@ public class MainWindowController extends BaseController implements Initializabl
     @FXML
     private WebView emailWebView;
 
+    private MessageRendererService messageRendererService;
+
     public MainWindowController(EmailManager emailManager, ViewFactory viewFactory, String fxmlName) {
         super(emailManager, viewFactory, fxmlName);
     }
@@ -66,13 +69,34 @@ public class MainWindowController extends BaseController implements Initializabl
         setupEmailsTableView();
         setupFolderSelection();
         setupBoldRows();
+        setupMessageRendererService();
+        setupMessageSelection();
+    }
+
+    private void setupMessageSelection() {
+        emailsTableView.setOnMouseClicked(event -> {
+            EmailMessage emailMessage = emailsTableView.getSelectionModel().getSelectedItem();
+            if (emailMessage != null) {
+                emailManager.setSelectedMessage(emailMessage);
+                if (!emailMessage.isRead()) {
+                    emailManager.setRead();
+                }
+                emailManager.setSelectedMessage(emailMessage);
+                messageRendererService.setEmailMessage(emailMessage);
+                messageRendererService.restart();
+            }
+        });
+    }
+
+    private void setupMessageRendererService() {
+        messageRendererService = new MessageRendererService(emailWebView.getEngine());
     }
 
     private void setupBoldRows() {
-        emailsTableView.setRowFactory(new Callback<TableView<EmailMessage>, TableRow<EmailMessage>>() {
+        emailsTableView.setRowFactory(new Callback<>() {
             @Override
             public TableRow<EmailMessage> call(TableView<EmailMessage> param) {
-                return new TableRow<EmailMessage>() {
+                return new TableRow<>() {
                     @Override
                     protected void updateItem(EmailMessage item, boolean empty) {
                         super.updateItem(item, empty);
@@ -94,6 +118,7 @@ public class MainWindowController extends BaseController implements Initializabl
             EmailTreeItem<String> item = (EmailTreeItem<String>) emailsTreeView.getSelectionModel().getSelectedItem();
 
             if (item != null) {
+                emailManager.setSelectedFolder(item);
                 emailsTableView.setItems(item.getEmailMessages());
             }
         });
